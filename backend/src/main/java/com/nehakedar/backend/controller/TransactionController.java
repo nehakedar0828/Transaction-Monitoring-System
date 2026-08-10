@@ -2,17 +2,20 @@ package com.nehakedar.backend.controller;
 
 import com.nehakedar.backend.dto.TransactionResponseDto;
 import com.nehakedar.backend.service.TransactionService;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.PositiveOrZero;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/transactions")
 @RequiredArgsConstructor
+@Validated
 public class TransactionController {
 
     private final TransactionService transactionService;
@@ -21,18 +24,24 @@ public class TransactionController {
     public Page<TransactionResponseDto> getTransactions(
 
             // Page number (default = 0)
-            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "0")
+            @Min(0)
+            int page,
 
             // Number of records per page (default = 10)
-            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "10")
+            @Min(1)
+            int size,
 
             // Column name to sort by.
             // Example: id, amount, datasetTime, createdAt
-            @RequestParam(defaultValue = "id") String sortBy,
+            @RequestParam(defaultValue = "id")
+            String sortBy,
 
             // Sorting direction.
             // Allowed values: asc or desc
-            @RequestParam(defaultValue = "asc") String direction,
+            @RequestParam(defaultValue = "asc")
+            String direction,
 
             // Optional parameter.
             // If omitted -> returns all transactions.
@@ -52,27 +61,20 @@ public class TransactionController {
     }
 
     // Endpoint to fetch a single transaction by its ID.
-// Example: GET /api/transactions/100
+    // Example: GET /api/transactions/100
     @GetMapping("/{id}")
     public ResponseEntity<TransactionResponseDto> getTransactionById(
 
-            // Extract the 'id' value from the URL.
-            // Example: /api/transactions/100 -> id = 100
+            // Extract the ID from the URL.
             @PathVariable Long id
     ) {
 
-        // Ask the service layer to fetch the transaction.
+        // Service throws TransactionNotFoundException
+        // if the transaction does not exist.
         TransactionResponseDto transaction =
                 transactionService.getTransactionById(id);
 
-        // If no transaction exists with the given ID,
-        // return HTTP 404 (Not Found).
-        if (transaction == null) {
-            return ResponseEntity.notFound().build();
-        }
-
-        // If found, return HTTP 200 (OK)
-        // along with the transaction DTO.
+        // Return the transaction with HTTP 200 OK.
         return ResponseEntity.ok(transaction);
     }
 
@@ -83,18 +85,22 @@ public class TransactionController {
     public Page<TransactionResponseDto> searchTransactions(
 
             @RequestParam(required = false)
+            @PositiveOrZero
             BigDecimal minAmount,
 
             @RequestParam(required = false)
+            @PositiveOrZero
             BigDecimal maxAmount,
 
             @RequestParam(required = false)
             Boolean fraud,
 
             @RequestParam(defaultValue = "0")
+            @Min(0)
             int page,
 
             @RequestParam(defaultValue = "10")
+            @Min(1)
             int size,
 
             @RequestParam(defaultValue = "id")

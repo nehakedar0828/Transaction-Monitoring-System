@@ -2,6 +2,7 @@ package com.nehakedar.backend.service;
 
 import com.nehakedar.backend.dto.TransactionResponseDto;
 import com.nehakedar.backend.entity.Transaction;
+import com.nehakedar.backend.exception.TransactionNotFoundException;
 import com.nehakedar.backend.repository.TransactionRepository;
 import com.nehakedar.backend.specifications.TransactionSpecification;
 import lombok.RequiredArgsConstructor;
@@ -80,8 +81,12 @@ public class TransactionService {
 
         // If the transaction doesn't exist, return null.
         // We'll replace this with a custom exception in the next phase.
+        // Throw a custom exception when the transaction doesn't exist.
         if (optionalTransaction.isEmpty()) {
-            return null;
+
+            throw new TransactionNotFoundException(
+                    "Transaction with ID " + id + " not found"
+            );
         }
 
         // Extract the Transaction object from the Optional.
