@@ -32,3 +32,9 @@ build/
 
 ### VS Code ###
 .vscode/
+
+.ipynb_checkpoints/
+ml-service/venv/
+__pycache__/
+*.pyc
+.env
