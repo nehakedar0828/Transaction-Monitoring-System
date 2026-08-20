@@ -206,3 +206,24 @@ if __name__ == "__main__":
     print("Actual class:", actual_class)
     print("Prediction result:")
     print(result)
+
+    if __name__ == "__main__":
+
+        import pandas as pd
+
+        dataset_path = "../backend/src/main/resources/dataset/creditcard.csv"
+
+        df = pd.read_csv(dataset_path)
+
+        # Select an actual fraud transaction.
+        row = df[df["Class"] == 1].iloc[0]
+
+        sample_transaction = {
+            "Time": float(row["Time"]),
+            "Amount": float(row["Amount"])
+        }
+
+        for i in range(1, 29):
+            sample_transaction[f"V{i}"] = float(row[f"V{i}"])
+
+        print(sample_transaction)
