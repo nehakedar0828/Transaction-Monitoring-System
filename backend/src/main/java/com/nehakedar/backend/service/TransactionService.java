@@ -12,6 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -19,6 +20,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class TransactionService {
 
     private final TransactionRepository transactionRepository;
@@ -161,12 +163,17 @@ public class TransactionService {
 
         // Convert a Transaction entity into a DTO.
         // The frontend should receive DTOs instead of database entities.
+        var prediction = transaction.getPrediction();
         return new TransactionResponseDto(
                 transaction.getId(),
                 transaction.getDatasetTime(),
                 transaction.getAmount(),
                 transaction.getActualFraud(),
-                transaction.getCreatedAt()
+                transaction.getCreatedAt(),
+                transaction.getProcessingStatus(),
+                prediction != null ? prediction.getRiskScore() : null,
+                prediction != null ? prediction.getSeverity() : null,
+                prediction != null ? prediction.getIsAnomaly() : null
         );
     }
 }

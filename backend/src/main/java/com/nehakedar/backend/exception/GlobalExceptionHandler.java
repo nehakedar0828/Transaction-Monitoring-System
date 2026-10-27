@@ -17,7 +17,6 @@ public class GlobalExceptionHandler {
     public ResponseEntity<Map<String, Object>> handleTransactionNotFound(
             TransactionNotFoundException exception) {
 
-        // Create a structured error response.
         Map<String, Object> errorResponse = Map.of(
                 "timestamp", LocalDateTime.now(),
                 "status", HttpStatus.NOT_FOUND.value(),
@@ -25,7 +24,6 @@ public class GlobalExceptionHandler {
                 "message", exception.getMessage()
         );
 
-        // Return HTTP 404 along with the error details.
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
                 .body(errorResponse);
@@ -36,7 +34,6 @@ public class GlobalExceptionHandler {
     public ResponseEntity<Map<String, Object>> handleValidationException(
             ConstraintViolationException exception) {
 
-        // Create a structured validation error response.
         Map<String, Object> errorResponse = Map.of(
                 "timestamp", LocalDateTime.now(),
                 "status", HttpStatus.BAD_REQUEST.value(),
@@ -44,7 +41,40 @@ public class GlobalExceptionHandler {
                 "message", exception.getMessage()
         );
 
-        // Return HTTP 400 Bad Request.
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(errorResponse);
+    }
+
+    // Handles ML inference failures or external service errors.
+    @ExceptionHandler(InferenceServiceException.class)
+    public ResponseEntity<Map<String, Object>> handleInferenceException(
+            InferenceServiceException exception) {
+
+        Map<String, Object> errorResponse = Map.of(
+                "timestamp", LocalDateTime.now(),
+                "status", HttpStatus.SERVICE_UNAVAILABLE.value(),
+                "error", "Inference Service Unavailable",
+                "message", exception.getMessage()
+        );
+
+        return ResponseEntity
+                .status(HttpStatus.SERVICE_UNAVAILABLE)
+                .body(errorResponse);
+    }
+
+    // Handles illegal state such as missing features or invalid business states.
+    @ExceptionHandler(IllegalStateException.class)
+    public ResponseEntity<Map<String, Object>> handleIllegalStateException(
+            IllegalStateException exception) {
+
+        Map<String, Object> errorResponse = Map.of(
+                "timestamp", LocalDateTime.now(),
+                "status", HttpStatus.BAD_REQUEST.value(),
+                "error", "Invalid Request State",
+                "message", exception.getMessage()
+        );
+
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
                 .body(errorResponse);

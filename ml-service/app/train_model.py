@@ -1,3 +1,22 @@
+"""
+=============================================================================
+EXPERIMENTAL EXPLORATION SCRIPT — NOT USED IN PRODUCTION RUNTIME
+=============================================================================
+This script explores an unsupervised IsolationForest baseline on 29 raw features.
+It does NOT export any model artifacts and is NOT invoked by the production service.
+
+Production Runtime Architecture:
+- Inference Service: app/predict.py
+- Production Estimator: LogisticRegression (class_weight='balanced', max_iter=1000)
+- Production Artifacts: model/fraud_model.pkl, model/scaler.pkl, model/threshold.pkl
+- Production Features: 31 engineered features (V1..V28, Amount_Log, time_sin, time_cos)
+- Production Threshold: 0.95
+- Training Source: notebooks/preprocessing.ipynb
+
+Retained strictly for experimental record and baseline comparison.
+=============================================================================
+"""
+
 import pandas as pd
 
 from sklearn.preprocessing import StandardScaler

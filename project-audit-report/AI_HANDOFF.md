@@ -1,3 +1,4 @@
+
 # AI HANDOFF AND SYSTEM CONTEXT DOCUMENT
 
 > **Purpose:** This document provides dense, comprehensive, and verified architectural and code-level context so that another AI assistant can instantly understand this codebase, debug issues, develop new features, or assist the user in technical interviews without re-analyzing the repository.

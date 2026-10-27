@@ -8,6 +8,7 @@ import com.nehakedar.backend.entity.Transaction;
 import com.nehakedar.backend.repository.TransactionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
@@ -16,6 +17,7 @@ import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class DashboardService {
 
     // Repository used to fetch transaction statistics.
@@ -89,12 +91,17 @@ public class DashboardService {
     // Converts a Transaction entity into the DTO used by the API.
     private TransactionResponseDto convertToDto(Transaction transaction) {
 
+        var prediction = transaction.getPrediction();
         return new TransactionResponseDto(
                 transaction.getId(),
                 transaction.getDatasetTime(),
                 transaction.getAmount(),
                 transaction.getActualFraud(),
-                transaction.getCreatedAt()
+                transaction.getCreatedAt(),
+                transaction.getProcessingStatus(),
+                prediction != null ? prediction.getRiskScore() : null,
+                prediction != null ? prediction.getSeverity() : null,
+                prediction != null ? prediction.getIsAnomaly() : null
         );
     }
 

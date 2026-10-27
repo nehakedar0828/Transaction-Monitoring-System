@@ -79,11 +79,6 @@
             <artifactId>opencsv</artifactId>
             <version>5.10</version>
         </dependency>
-        <!-- Provides Bean Validation annotations such as @Positive and @Min -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-validation</artifactId>
-        </dependency>
 	</dependencies>
 
 	<build>
